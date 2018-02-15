@@ -9,11 +9,10 @@
 namespace Core;
 
 
-use Core\Contracts\ResponseInterface;
+use Core\Contracts\AbstractResponse;
 
-class Response implements ResponseInterface
+class Response extends AbstractResponse
 {
-    private static $instance;
     private $layout = '';
 
     private $headers = [];
@@ -22,21 +21,9 @@ class Response implements ResponseInterface
 
     protected $main_layout = 'layouts/main.php';
 
-    private function __construct(){}
-    private function __clone(){}
-
-    public static function getInstance()
-    {
-        if (null === static::$instance) {
-            static::$instance = new static();
-        }
-
-        return static::$instance;
-    }
-
     /**
      * @param int $response_code
-     * @return Response
+     * @return AbstractResponse
      */
     public function setResponseCode(int $response_code)
     {
@@ -52,7 +39,7 @@ class Response implements ResponseInterface
     public function render(string $view, array $parameters = [])
     {
         $content = $this->load_view("$view.php", $parameters);
-        $this->layout = $this->load_view($this->main_layout, ['content' => $content]);
+        $this->layout = $this->load_view($this->main_layout, array_merge($parameters, ['content' => $content]));
         return $this;
     }
 
@@ -75,7 +62,7 @@ class Response implements ResponseInterface
     /**
      * @param string $name
      * @param string $value
-     * @return Response
+     * @return AbstractResponse
      */
     public function setHeader(string $name, string $value)
     {
@@ -83,6 +70,15 @@ class Response implements ResponseInterface
         return $this;
     }
 
+    /**
+     * @param $uri
+     * @param int $code
+     */
+    public function redirect(string $uri, int $code = 301): void
+    {
+        header( "Location: $uri", true, $code);
+        exit;
+    }
     /**
      *
      */

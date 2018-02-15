@@ -13,10 +13,6 @@ $whoops = new \Whoops\Run;
 $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 $whoops->register();
 
-$request = \Core\Request::getInstance();
-$response = \Core\Response::getInstance();
-
-
 $core = new \Core\Core();
 
-$core->init(new \Core\Routing, $request, $response);
+$core->init(new \Core\Routing, new \Core\Request, new \Core\Response);

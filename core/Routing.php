@@ -8,26 +8,22 @@
 
 namespace Core;
 
-use Core\Contracts\RoutingInterface;
+use Core\Contracts\AbstractRouting;
 
-class Routing implements RoutingInterface
+class Routing extends AbstractRouting
 {
-    protected $config_file ='routes.php';
-
-    protected $configs = [];
-
-    protected $routes = [];
-
-    public function __construct()
-    {
-        $this->routes = require_once config_path() . "/$this->config_file";
-    }
-
+    /**
+     * @return array
+     */
     public function getRoutes(): array
     {
         return $this->routes;
     }
 
+    /**
+     * @param string $uri
+     * @return string
+     */
     public function getControllerByUri(string $uri): string
     {
         return $this->routes[$uri];

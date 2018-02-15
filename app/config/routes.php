@@ -7,6 +7,5 @@
  */
 
 return [
-    '/' => \App\Controllers\BasicController::class,
-    'path' => 'sdf'
+    'user' => \App\Controllers\UserController::class
 ];

@@ -8,19 +8,19 @@
 
 namespace Core;
 
-use Core\Contracts\RequestInterface;
-use Core\Contracts\ResponseInterface;
-use Core\Contracts\RoutingInterface;
-use Core\Fabrics\ControllerFabric;
+use Core\Contracts\AbstractRequest;
+use Core\Contracts\AbstractResponse;
+use Core\Contracts\AbstractRouting;
+use Core\Factories\ControllerFactory;
 
 class Core
 {
-    public function init(RoutingInterface $routing, RequestInterface $request, ResponseInterface $response)
+    public function init(AbstractRouting $routing, AbstractRequest $request, AbstractResponse $response)
     {
         $controller = $routing->getControllerByUri($request->getController());
 
         $method = $request->getMethod() ?: 'index';
 
-        ControllerFabric::createController($controller)->{$method}($request, $response);
+        ControllerFactory::createController($controller, $request, $response)->{$method}();
     }
 }
