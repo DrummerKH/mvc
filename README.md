@@ -1,8 +1,9 @@
 # mvc
-
 Custom test project, without any frameworks.
-
 Initial SQL exists in /resources/sql.sql file.
+
+Installation:
+* Download dependencies: composer install
 
 Routes:
 * /user/login - Login user
