@@ -6,7 +6,7 @@ use App\Contracts\AbstractPayments;
 use App\Exceptions\UserException;
 use App\Repositories\UsersRepository;
 use App\Traits\Auth;
-use Core\Controller;
+use Core\Contracts\AbstractController;
 use Core\MysqlStorage;
 use App\Services\Payments;
 
@@ -17,13 +17,20 @@ use App\Services\Payments;
  * Time: 12:04
  */
 
-class UserController extends Controller
+class UserController extends AbstractController
 {
     use Auth;
 
+    /**
+     * Service instance
+     * @var Payments
+     */
     public $payments;
 
-    public function index()
+    /**
+     * Default method
+     */
+    public function index(): void
     {
         $this->response->redirect('/user/login', 302);
     }
@@ -31,7 +38,7 @@ class UserController extends Controller
     /**
      * Login user
      */
-    public function login()
+    public function login(): void
     {
         if($this->authAuthorized())
             $this->response->redirect('/user/withdraw', 302);
@@ -76,7 +83,7 @@ class UserController extends Controller
     /**
      * Logout user
      */
-    public function logout()
+    public function logout(): void
     {
         $this->authLogout();
         $this->response->redirect('/user/login', 302);
@@ -85,7 +92,7 @@ class UserController extends Controller
     /**
      * Withdraw money
      */
-    public function withdraw()
+    public function withdraw(): void
     {
         if(!$this->authAuthorized())
             $this->response->redirect('/user/login', 302);
@@ -133,7 +140,7 @@ class UserController extends Controller
      * Set payments service
      * @param AbstractPayments $payments
      */
-    protected function setPaymentsService(AbstractPayments $payments)
+    protected function setPaymentsService(AbstractPayments $payments): void
     {
         $this->payments = $payments;
     }

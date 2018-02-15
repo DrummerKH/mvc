@@ -30,5 +30,5 @@ abstract class AbstractPayments
      * @param float $amount
      * @return mixed
      */
-    abstract function transaction(int $user_id, float $amount);
+    abstract function transaction(int $user_id, float $amount): void;
 }

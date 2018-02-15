@@ -30,6 +30,10 @@ class Users
      */
     public $password;
 
+    /**
+     * Table name
+     * @var string
+     */
     public static $table_name = 'users';
 
     public function __construct(string $name, float $balance = 0, int $id = NULL, string $password = NULL)

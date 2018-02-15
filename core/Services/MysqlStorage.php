@@ -14,7 +14,7 @@ class MysqlStorage extends AbstractStorageManager
     /**
      * @return \PDO
      */
-    protected function connect()
+    protected function connect(): \PDO
     {
         return new \PDO(
             "mysql:host={$this->config['host']};dbname={$this->config['dbname']};port={$this->config['port']}",
@@ -29,9 +29,9 @@ class MysqlStorage extends AbstractStorageManager
     /**
      * @param string $query
      * @param array $parameters
-     * @return MysqlStorage
+     * @return \PDOStatement
      */
-    public function query(string $query, array $parameters)
+    public function query(string $query, array $parameters): \PDOStatement
     {
         $this->statement = $this->connection->prepare($query);
         $this->statement->execute($this->prepareParameters($parameters));
@@ -39,9 +39,9 @@ class MysqlStorage extends AbstractStorageManager
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function fetch()
+    public function fetch(): array
     {
         return $this->statement->fetchAll();
     }
@@ -63,7 +63,7 @@ class MysqlStorage extends AbstractStorageManager
      * Start transaction
      * @return void
      */
-    public function beginTransaction()
+    public function beginTransaction(): void
     {
         $this->connection->beginTransaction();
     }
@@ -72,12 +72,15 @@ class MysqlStorage extends AbstractStorageManager
      * Commit transaction
      * @return void
      */
-    public function commit()
+    public function commit(): void
     {
         $this->connection->commit();
     }
 
-    public function rollback()
+    /**
+     * Rollback transaction
+     */
+    public function rollback(): void
     {
         $this->connection->rollBack();
     }

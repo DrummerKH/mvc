@@ -22,7 +22,7 @@ class Payments extends AbstractPayments
      * @param float $amount
      * @throws UserException
      */
-    public function transaction(int $user_id, float $amount)
+    public function transaction(int $user_id, float $amount): void
     {
         $this->storage->withShareLock();
 

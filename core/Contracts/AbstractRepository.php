@@ -21,4 +21,6 @@ abstract class AbstractRepository
     {
         $this->storage = $storage;
     }
+
+    abstract public function findById(int $id);
 }

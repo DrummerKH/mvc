@@ -9,6 +9,7 @@
 namespace App\Traits;
 
 use App\Contracts\AbstractAuthorization;
+use App\Entities\Users;
 use App\Services\Authorization;
 use Core\MysqlStorage;
 
@@ -40,7 +41,7 @@ trait Auth {
      * @return bool
      * @throws \App\Exceptions\UserException
      */
-    public function authAuthorize(string $username, string $password)
+    public function authAuthorize(string $username, string $password): bool
     {
         return $this->authorization->authorize($username, $password);
     }
@@ -48,7 +49,7 @@ trait Auth {
     /**
      * @return bool
      */
-    public function authAuthorized()
+    public function authAuthorized(): bool
     {
         return $this->authorization->authorized();
     }
@@ -56,17 +57,17 @@ trait Auth {
     /**
      * @return \App\Entities\Users|bool
      */
-    public function authGetUser()
+    public function authGetUser(): Users
     {
         return $this->authorization->getUser();
     }
 
-    public function authLogout()
+    public function authLogout(): bool
     {
         return $this->authorization->logout();
     }
 
-    public function authCloseSession()
+    public function authCloseSession(): void
     {
         unset($this->authorization);
     }

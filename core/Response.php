@@ -23,9 +23,9 @@ class Response extends AbstractResponse
 
     /**
      * @param int $response_code
-     * @return AbstractResponse
+     * @return Response
      */
-    public function setResponseCode(int $response_code)
+    public function setResponseCode(int $response_code): Response
     {
         $this->response_code = $response_code;
         return $this;
@@ -34,12 +34,12 @@ class Response extends AbstractResponse
     /**
      * @param string $view
      * @param array $parameters
-     * @return $this
+     * @return Response
      */
-    public function render(string $view, array $parameters = [])
+    public function render(string $view, array $parameters = []): Response
     {
-        $content = $this->load_view("$view.php", $parameters);
-        $this->layout = $this->load_view($this->main_layout, array_merge($parameters, ['content' => $content]));
+        $content = $this->loadView("$view.php", $parameters);
+        $this->layout = $this->loadView($this->main_layout, array_merge($parameters, ['content' => $content]));
         return $this;
     }
 
@@ -48,13 +48,12 @@ class Response extends AbstractResponse
      * @param array $parameters
      * @return string
      */
-    protected function load_view(string $view_file, array $parameters = [])
+    protected function loadView(string $view_file, array $parameters = []): string
     {
         extract($parameters);
 
         ob_start();
-
-        include \views_path() . "/$view_file";
+            include \views_path() . "/$view_file";
 
         return ob_get_clean();
     }

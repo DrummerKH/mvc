@@ -13,7 +13,11 @@ use Core\Contracts\AbstractRepository;
 
 class TransactionsRepository extends AbstractRepository
 {
-    public function save(Transactions $transaction)
+    /**
+     * Save transaction
+     * @param Transactions $transaction
+     */
+    public function save(Transactions $transaction): void
     {
         $this->storage->query(
             "INSERT INTO `" . Transactions::$table_name . "` (`user_id`, `amount`) VALUES (:user_id, :amount)",
@@ -22,5 +26,26 @@ class TransactionsRepository extends AbstractRepository
                 'amount' => $transaction->getAmount()
             ]
         );
+    }
+
+    /**
+     * Find user by ID
+     * @param int $id
+     * @return Transactions|bool
+     */
+    public function findById(int $id)
+    {
+        $result = $this->storage->query(
+            "SELECT * FROM " . Transactions::$table_name . " WHERE `id` = :id" . ($this->storage->shareLock ? ' LOCK IN SHARE MODE' : ''),
+            [
+                'id' => $id
+            ]
+        )->fetchAll();
+
+        if (empty($result[0]))
+            return false;
+
+        return new Transactions($result[0]['user_id'], $result[0]['amount']);
+
     }
 }

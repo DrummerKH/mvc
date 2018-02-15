@@ -8,12 +8,13 @@
 
 namespace Core\Factories;
 
+use Core\Contracts\AbstractController;
 use Core\Contracts\AbstractRequest;
 use Core\Contracts\AbstractResponse;
 
 class ControllerFactory
 {
-    public static function createController(string $controller, AbstractRequest $request, AbstractResponse $response)
+    public static function createController(string $controller, AbstractRequest $request, AbstractResponse $response): AbstractController
     {
         $object = new $controller();
         $object->request = $request;

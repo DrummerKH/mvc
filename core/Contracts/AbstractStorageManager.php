@@ -45,7 +45,7 @@ abstract class AbstractStorageManager
         $this->connection = $this->connect();
     }
 
-    public function withShareLock()
+    public function withShareLock(): void
     {
         $this->shareLock = true;
     }
@@ -68,17 +68,17 @@ abstract class AbstractStorageManager
      * Start transaction
      * @return mixed
      */
-    abstract public function beginTransaction();
+    abstract public function beginTransaction(): void;
 
     /**
      * Commit transaction
      * @return mixed
      */
-    abstract public function commit();
+    abstract public function commit(): void;
 
     /**
      * Get data from query
      * @return mixed
      */
-    abstract public function fetch();
+    abstract public function fetch(): array;
 }

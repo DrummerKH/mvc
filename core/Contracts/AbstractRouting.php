@@ -17,8 +17,10 @@ abstract class AbstractRouting
      */
     protected $config_file ='routes.php';
 
-    protected $configs = [];
-
+    /**
+     * Array of uri and controllers
+     * @var array
+     */
     protected $routes = [];
 
     public function __construct()

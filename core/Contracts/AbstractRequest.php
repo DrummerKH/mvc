@@ -11,25 +11,53 @@ namespace Core\Contracts;
 
 abstract class AbstractRequest
 {
+    /**
+     * URI of request
+     * @var string
+     */
     protected $uri;
 
-    protected $query_params = [];
+    /**
+     * Array of GET parameters
+     * @var array
+     */
+    protected $query_params;
 
+    /**
+     * Array of URI parts
+     * @var array
+     */
     protected $path;
 
+    /**
+     * Requested controller name
+     * @var string
+     */
     protected $controller;
 
+    /**
+     * Requested method
+     * @var string
+     */
     protected $method;
 
+    /**
+     * Array of POST parameters
+     * @var array
+     */
     protected $post;
 
+    /**
+     * HTTP method
+     * @var string
+     */
     protected $http_method;
 
     /**
      * Configure instance
      * @return void
      */
-    abstract protected function configure():void;
+    abstract protected function configure(): void;
 
     /**
      * @return string
@@ -50,9 +78,9 @@ abstract class AbstractRequest
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getPath(): string
+    public function getPath(): array
     {
         return $this->path;
     }

@@ -8,6 +8,7 @@
 
 namespace App\Contracts;
 
+use App\Entities\Users;
 use Core\Contracts\AbstractStorageManager;
 
 abstract class AbstractAuthorization
@@ -33,19 +34,19 @@ abstract class AbstractAuthorization
      * @param string $password
      * @return mixed
      */
-    abstract function authorize(string $username, string $password);
+    abstract function authorize(string $username, string $password): bool;
 
     /**
      * Does user authorised
      * @return mixed
      */
-    abstract function authorized();
+    abstract function authorized(): bool;
 
     /**
      * Get authorised user
      * @return mixed
      */
-    abstract function getUser();
+    abstract function getUser(): Users;
 
     /**
      * Check password
@@ -53,17 +54,17 @@ abstract class AbstractAuthorization
      * @param string $hash
      * @return mixed
      */
-    abstract protected function verifyPassword(string $string, string $hash);
+    abstract protected function verifyPassword(string $string, string $hash): bool;
 
     /**
      * Logout user
      * @return mixed
      */
-    abstract function logout();
+    abstract function logout(): bool;
 
     /**
      * Close session
      * @return void
      */
-    abstract function closeSession();
+    abstract function closeSession(): void;
 }

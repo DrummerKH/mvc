@@ -60,7 +60,7 @@ class UsersRepository extends AbstractRepository
      * @param Users $user
      * @param float $balance
      */
-    public function updateBalance(Users $user, float $balance)
+    public function updateBalance(Users $user, float $balance): void
     {
         $this->storage->query(
             "UPDATE " . Users::$table_name . " SET balance = :balance WHERE `id` = :id",

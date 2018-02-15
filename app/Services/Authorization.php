@@ -10,6 +10,7 @@ namespace App\Services;
 
 
 use App\Contracts\AbstractAuthorization;
+use App\Entities\Users;
 use App\Exceptions\UserException;
 use App\Repositories\UsersRepository;
 
@@ -21,7 +22,7 @@ class Authorization extends AbstractAuthorization
      * @return bool
      * @throws UserException
      */
-    public function authorize(string $username, string $password)
+    public function authorize(string $username, string $password): bool
     {
         $userRepository = new UsersRepository($this->storage);
 
@@ -42,7 +43,7 @@ class Authorization extends AbstractAuthorization
      * Does user authorised
      * @return bool
      */
-    public function authorized()
+    public function authorized(): bool
     {
         return isset($_SESSION['user_id']);
     }
@@ -50,10 +51,9 @@ class Authorization extends AbstractAuthorization
     /**
      * @return \App\Entities\Users|bool
      */
-    public function getUser()
+    public function getUser(): Users
     {
         $userRepository = new UsersRepository($this->storage);
-
         return $userRepository->findById($_SESSION['user_id']);
     }
 
@@ -62,7 +62,7 @@ class Authorization extends AbstractAuthorization
      * @param string $hash
      * @return bool|string
      */
-    protected function verifyPassword(string $string, string $hash)
+    protected function verifyPassword(string $string, string $hash): bool
     {
         return password_verify($string, $hash);
     }
@@ -78,11 +78,14 @@ class Authorization extends AbstractAuthorization
     /**
      * Close session
      */
-    public function closeSession()
+    public function closeSession(): void
     {
         session_write_close();
     }
 
+    /**
+     * Destruct and close session
+     */
     public function __destruct()
     {
         $this->closeSession();

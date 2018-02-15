@@ -6,13 +6,10 @@
  * Time: 23:13
  */
 
-namespace Core;
+namespace Core\Contracts;
 
 
-use Core\Contracts\AbstractRequest;
-use Core\Contracts\AbstractResponse;
-
-class Controller
+abstract class AbstractController
 {
     /**
      * @var AbstractRequest

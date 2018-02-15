@@ -22,6 +22,7 @@ class Request extends AbstractRequest
 
     protected function configure(): void
     {
+        # Getting parts of uri
         $this->path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 
         $path = explode('/', $this->path);
