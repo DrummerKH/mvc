@@ -11,11 +11,12 @@ namespace Core\Contracts;
 
 abstract class AbstractStorageManager
 {
+
     /**
-     * Need set share lock during select or not
+     * Set FOR UPDATE LOCK
      * @var bool
      */
-    public $shareLock = false;
+    public $forUpdate = false;
 
     /**
      * Database credentials config file
@@ -43,11 +44,6 @@ abstract class AbstractStorageManager
     {
         $this->config = include config_path() . "/$this->config_file";
         $this->connection = $this->connect();
-    }
-
-    public function withShareLock(): void
-    {
-        $this->shareLock = true;
     }
 
     /**

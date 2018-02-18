@@ -10,7 +10,8 @@
   "require-dev": {
   },
   "autoload": {
-    "classmap": [
+    "files": [
+      "core/Helpers/PathsHelper.php"
     ],
     "psr-4": {
       "App\\": "app/",

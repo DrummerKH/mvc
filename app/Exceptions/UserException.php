@@ -8,4 +8,7 @@
 
 namespace App\Exceptions;
 
-class UserException extends \Exception {}
+
+class UserException extends \Exception
+{
+}

@@ -20,7 +20,11 @@ class Request extends AbstractRequest
         $this->configure();
     }
 
-    protected function configure(): void
+    /**
+     * Getting necessary data
+     * @return AbstractRequest
+     */
+    protected function configure(): AbstractRequest
     {
         # Getting parts of uri
         $this->path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
@@ -34,5 +38,7 @@ class Request extends AbstractRequest
         $this->post = $_POST;
 
         $this->http_method = $_SERVER['REQUEST_METHOD'];
+
+        return $this;
     }
 }

@@ -8,41 +8,55 @@
 
 namespace App\Services;
 
+
 use App\Contracts\AbstractPayments;
 use App\Entities\Transactions;
+use App\Entities\Users;
+use App\Exceptions\UserException;
+use App\Factories\RepositoryFactory;
 use App\Repositories\TransactionsRepository;
 use App\Repositories\UsersRepository;
-use App\Exceptions\UserException;
 
 class Payments extends AbstractPayments
 {
     /**
      * Withdraw user money
-     * @param int $user_id
+     * @param Users $user
      * @param float $amount
      * @throws UserException
+     * @throws \Exception
      */
-    public function transaction(int $user_id, float $amount): void
+    public function withdraw(Users $user, float $amount): void
     {
-        $this->storage->withShareLock();
+        if ($amount <= 0) {
+            throw new UserException('Amount must be greater than 0');
+        }
 
-        $usersRepository = new UsersRepository($this->storage);
-        $user = $usersRepository->findById($user_id);
+        /** @var UsersRepository $usersRepository */
+        $usersRepository = RepositoryFactory::create(UsersRepository::class);
 
-        if(!$user)
-            throw new UserException('User not found');
+        /** @var TransactionsRepository $transactionsRepository */
+        $transactionsRepository = RepositoryFactory::create(TransactionsRepository::class);
 
-        $transaction = new Transactions($user_id, $amount);
-        $transactionsRepository = new TransactionsRepository($this->storage);
-
+        # Execute transaction
         $this->storage->beginTransaction();
 
-        $transactionsRepository->save($transaction);
+        # Lock user row for update
+        if (!$lockedUser = $usersRepository->forUpdate()->findById($user->getId())) {
+            throw new UserException('User node found');
+        }
 
-        if ($user->getBalance() + $amount >= 0)
-            $usersRepository->updateBalance($user, $amount);
-        else
+        if ($lockedUser->getBalance() - $amount < 0) {
             throw new UserException('Not enough funds');
+        }
+
+        $transaction = new Transactions($lockedUser->getId(), -$amount);
+
+        # Update user balance
+        $usersRepository->updateBalance($lockedUser, -$amount);
+
+        # Add transaction row
+        $transactionsRepository->save($transaction);
 
         $this->storage->commit();
     }

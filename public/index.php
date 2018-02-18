@@ -6,13 +6,18 @@
  * Time: 11:53
  */
 
-require __DIR__.'/vendor/autoload.php';
-require __DIR__.'/core/Helpers/PathsHelper.php';
+require __DIR__ . '/../vendor/autoload.php';
+
 
 $whoops = new \Whoops\Run;
 $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 $whoops->register();
 
-$core = new \Core\Core();
+try {
 
-$core->init(new \Core\Routing, new \Core\Request, new \Core\Response);
+    $code = \Core\Factories\CoreFactory::create();
+    $code->init();
+
+} catch (Exception $e) {
+    $whoops->handleException($e);
+}

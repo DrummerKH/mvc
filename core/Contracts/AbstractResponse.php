@@ -34,17 +34,17 @@ abstract class AbstractResponse
     abstract public function setHeader(string $name, string $value);
 
     /**
+     * Redirect to another address
+     * @param string $uri
+     * @param int $code
+     */
+    abstract public function redirect(string $uri, int $code = 301): void;
+
+    /**
      * Load view from file
      * @param string $view_file
      * @param array $parameters
      * @return string
      */
     abstract protected function loadView(string $view_file, array $parameters = []): string;
-
-    /**
-     * Redirect to another address
-     * @param string $uri
-     * @param int $code
-     */
-    abstract public function redirect(string $uri, int $code = 301): void;
 }

@@ -7,13 +7,13 @@
 <body>
 
 <div>
-    <?= isset($error) ? $error : ''?>
+    <?= isset($error) ? $error : '' ?>
 </div>
 
 
 <div class="wrap">
     <div class="container">
-        <?= $content?>
+        <?= $content ?>
     </div>
 </div>
 

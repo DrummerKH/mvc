@@ -31,19 +31,22 @@ class TransactionsRepository extends AbstractRepository
     /**
      * Find user by ID
      * @param int $id
-     * @return Transactions|bool
+     * @return Transactions|null
      */
     public function findById(int $id)
     {
         $result = $this->storage->query(
-            "SELECT * FROM " . Transactions::$table_name . " WHERE `id` = :id" . ($this->storage->shareLock ? ' LOCK IN SHARE MODE' : ''),
+            "SELECT * FROM " . Transactions::$table_name . " WHERE `id` = :id" . (
+                $this->storage->forUpdate ? ' FOR UPDATE' : ''
+            ),
             [
                 'id' => $id
             ]
         )->fetchAll();
 
-        if (empty($result[0]))
-            return false;
+        if (empty($result[0])) {
+            return null;
+        }
 
         return new Transactions($result[0]['user_id'], $result[0]['amount']);
 

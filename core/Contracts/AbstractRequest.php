@@ -54,12 +54,6 @@ abstract class AbstractRequest
     protected $http_method;
 
     /**
-     * Configure instance
-     * @return void
-     */
-    abstract protected function configure(): void;
-
-    /**
      * @return string
      */
     public function getUri(): string
@@ -142,4 +136,10 @@ abstract class AbstractRequest
     {
         return $this->http_method == 'DELETE';
     }
+
+    /**
+     * Configure instance
+     * @return AbstractRequest
+     */
+    abstract protected function configure(): AbstractRequest;
 }

@@ -9,6 +9,7 @@
 namespace App\Contracts;
 
 
+use App\Entities\Users;
 use Core\Contracts\AbstractStorageManager;
 
 abstract class AbstractPayments
@@ -26,9 +27,9 @@ abstract class AbstractPayments
 
     /**
      * Withdraw user money
-     * @param int $user_id
+     * @param Users $user
      * @param float $amount
      * @return mixed
      */
-    abstract function transaction(int $user_id, float $amount): void;
+    abstract function withdraw(Users $user, float $amount): void;
 }

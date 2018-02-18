@@ -15,7 +15,7 @@ abstract class AbstractRouting
      * Routes config fle
      * @var string
      */
-    protected $config_file ='routes.php';
+    protected $config_file = 'routes.php';
 
     /**
      * Array of uri and controllers

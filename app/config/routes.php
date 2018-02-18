@@ -7,5 +7,6 @@
  */
 
 return [
+    '/' => \App\Controllers\UserController::class,
     'user' => \App\Controllers\UserController::class
 ];

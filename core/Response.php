@@ -13,13 +13,10 @@ use Core\Contracts\AbstractResponse;
 
 class Response extends AbstractResponse
 {
-    private $layout = '';
-
-    private $headers = [];
-
-    private $response_code = 200;
-
     protected $main_layout = 'layouts/main.php';
+    private $layout = '';
+    private $headers = [];
+    private $response_code = 200;
 
     /**
      * @param int $response_code
@@ -53,7 +50,7 @@ class Response extends AbstractResponse
         extract($parameters);
 
         ob_start();
-            include \views_path() . "/$view_file";
+        include \views_path() . "/$view_file";
 
         return ob_get_clean();
     }
@@ -75,9 +72,10 @@ class Response extends AbstractResponse
      */
     public function redirect(string $uri, int $code = 301): void
     {
-        header( "Location: $uri", true, $code);
+        header("Location: $uri", true, $code);
         exit;
     }
+
     /**
      *
      */

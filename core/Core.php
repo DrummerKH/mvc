@@ -11,22 +11,43 @@ namespace Core;
 use Core\Contracts\AbstractRequest;
 use Core\Contracts\AbstractResponse;
 use Core\Contracts\AbstractRouting;
+use Core\Contracts\AbstractSession;
 use Core\Factories\ControllerFactory;
 
 class Core
 {
+    protected $routing;
+    protected $request;
+    protected $response;
+
+    public function __construct(
+        AbstractRouting $routing,
+        AbstractRequest $request,
+        AbstractResponse $response,
+        AbstractSession $session
+    ) {
+        $this->routing = $routing;
+        $this->request = $request;
+        $this->response = $response;
+
+        ini_set('display_errors', false);
+    }
+
     /**
      * Initial core method
-     * @param AbstractRouting $routing
-     * @param AbstractRequest $request
-     * @param AbstractResponse $response
+     * @throws Exceptions\SessionException
+     * @throws \Exception
      */
-    public function init(AbstractRouting $routing, AbstractRequest $request, AbstractResponse $response): void
+    public function init(): Core
     {
-        $controller = $routing->getControllerByUri($request->getController());
+        Session::getInstance()->check();
 
-        $method = $request->getMethod() ?: 'index'; # Get method, instead of get default
+        $controller = $this->routing->getControllerByUri($this->request->getController());
 
-        ControllerFactory::createController($controller, $request, $response)->{$method}();
+        $method = $this->request->getMethod() ?: 'index'; # Get method, instead of get default
+
+        ControllerFactory::createController($controller, $this->request, $this->response)->{$method}();
+
+        return $this;
     }
 }

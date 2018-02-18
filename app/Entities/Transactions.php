@@ -12,29 +12,25 @@ namespace App\Entities;
 class Transactions
 {
     /**
+     * @var string
+     */
+    public static $table_name = 'transactions';
+    /**
      * @var integer
      */
     public $id;
-
     /**
      * @var integer
      */
     public $user_id;
-
     /**
      * @var float
      */
     public $amount;
-
     /**
      * @var string
      */
     public $created_at;
-
-    /**
-     * @var string
-     */
-    public static $table_name = 'transactions';
 
     public function __construct(int $user_id, float $amount)
     {
@@ -51,11 +47,27 @@ class Transactions
     }
 
     /**
+     * @param int $user_id
+     */
+    public function setUserId(int $user_id): void
+    {
+        $this->user_id = $user_id;
+    }
+
+    /**
      * @return float
      */
     public function getAmount(): float
     {
         return $this->amount;
+    }
+
+    /**
+     * @param float $amount
+     */
+    public function setAmount(float $amount): void
+    {
+        $this->amount = $amount;
     }
 
     /**
@@ -72,21 +84,5 @@ class Transactions
     public function getId(): int
     {
         return $this->id;
-    }
-
-    /**
-     * @param int $user_id
-     */
-    public function setUserId(int $user_id): void
-    {
-        $this->user_id = $user_id;
-    }
-
-    /**
-     * @param float $amount
-     */
-    public function setAmount(float $amount): void
-    {
-        $this->amount = $amount;
     }
 }
