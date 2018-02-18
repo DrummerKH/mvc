@@ -16,19 +16,22 @@ class UsersRepository extends AbstractRepository
     /**
      * Find user by ID
      * @param int $id
-     * @return Users|bool
+     * @return Users|null
      */
     public function findById(int $id)
     {
         $result = $this->storage->query(
-            "SELECT * FROM " . Users::$table_name . " WHERE `id` = :id" . ($this->storage->shareLock ? ' LOCK IN SHARE MODE' : ''),
+            "SELECT * FROM " . Users::$table_name . " WHERE `id` = :id" . (
+            $this->storage->forUpdate ? ' FOR UPDATE' : ''
+            ),
             [
                 'id' => $id
             ]
-        )->fetchAll();
+        )->fetch();
 
-        if (empty($result[0]))
-            return false;
+        if (empty($result[0])) {
+            return null;
+        }
 
         return new Users($result[0]['name'], $result[0]['balance'], $result[0]['id'], $result[0]['password']);
 
@@ -37,19 +40,22 @@ class UsersRepository extends AbstractRepository
     /**
      * Find user by name
      * @param string $name
-     * @return Users|bool
+     * @return Users|null
      */
     public function findByName(string $name)
     {
         $result = $this->storage->query(
-            "SELECT * FROM " . Users::$table_name . " WHERE `name` = :name" . ($this->storage->shareLock ? ' LOCK IN SHARE MODE' : ''),
+            "SELECT * FROM " . Users::$table_name . " WHERE `name` = :name" . (
+            $this->storage->forUpdate ? ' FOR UPDATE' : ''
+            ),
             [
                 'name' => $name
             ]
-        )->fetchAll();
+        )->fetch();
 
-        if (empty($result[0]))
-            return false;
+        if (empty($result[0])) {
+            return null;
+        }
 
         return new Users($result[0]['name'], $result[0]['balance'], $result[0]['id'], $result[0]['password']);
 
@@ -58,14 +64,14 @@ class UsersRepository extends AbstractRepository
     /**
      * Update user balance
      * @param Users $user
-     * @param float $balance
+     * @param float $amount
      */
-    public function updateBalance(Users $user, float $balance): void
+    public function updateBalance(Users $user, float $amount): void
     {
         $this->storage->query(
-            "UPDATE " . Users::$table_name . " SET balance = :balance WHERE `id` = :id",
+            "UPDATE " . Users::$table_name . " SET balance = balance + :balance WHERE `id` = :id",
             [
-                'balance' => $balance + $user->getBalance(),
+                'balance' => $amount,
                 'id' => $user->getId()
             ]
         );

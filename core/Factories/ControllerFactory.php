@@ -14,8 +14,17 @@ use Core\Contracts\AbstractResponse;
 
 class ControllerFactory
 {
-    public static function createController(string $controller, AbstractRequest $request, AbstractResponse $response): AbstractController
-    {
+    /**
+     * @param string $controller
+     * @param AbstractRequest $request
+     * @param AbstractResponse $response
+     * @return AbstractController
+     */
+    public static function createController(
+        string $controller,
+        AbstractRequest $request,
+        AbstractResponse $response
+    ): AbstractController {
         $object = new $controller();
         $object->request = $request;
         $object->response = $response;

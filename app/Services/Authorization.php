@@ -13,9 +13,15 @@ use App\Contracts\AbstractAuthorization;
 use App\Entities\Users;
 use App\Exceptions\UserException;
 use App\Repositories\UsersRepository;
+use Core\Session;
 
 class Authorization extends AbstractAuthorization
 {
+    /**
+     * @var UsersRepository
+     */
+    protected $userRepository;
+
     /**
      * @param string $username
      * @param string $password
@@ -24,37 +30,25 @@ class Authorization extends AbstractAuthorization
      */
     public function authorize(string $username, string $password): bool
     {
-        $userRepository = new UsersRepository($this->storage);
+        /**
+         * @var Users $user
+         */
+        $user = $this->userRepository->findByName($username);
 
-        $user = $userRepository->findByName($username);
-
-        if (!$user)
+        if (!$user) {
             throw new UserException('User not found');
+        }
 
-        if($this->verifyPassword($password, $user->getPassword())) {
-            $_SESSION['user_id'] = $user->getId();
+        if ($this->verifyPassword($password, $user->getPassword())) {
+
+            Session::getInstance()
+                ->regenerate()
+                ->set('user_id', $user->getId());
+
             return true;
         }
 
         return false;
-    }
-
-    /**
-     * Does user authorised
-     * @return bool
-     */
-    public function authorized(): bool
-    {
-        return isset($_SESSION['user_id']);
-    }
-
-    /**
-     * @return \App\Entities\Users|bool
-     */
-    public function getUser(): Users
-    {
-        $userRepository = new UsersRepository($this->storage);
-        return $userRepository->findById($_SESSION['user_id']);
     }
 
     /**
@@ -68,27 +62,29 @@ class Authorization extends AbstractAuthorization
     }
 
     /**
+     * Does user authorised
      * @return bool
      */
-    public function logout(): bool
+    public function authorized(): bool
     {
-        return session_destroy();
+        return (bool)Session::getInstance()->get('user_id');
     }
 
     /**
-     * Close session
+     * @return \App\Entities\Users|bool
      */
-    public function closeSession(): void
+    public function getUser(): Users
     {
-        session_write_close();
+        return $this->userRepository->findById(Session::getInstance()->get('user_id'));
     }
 
     /**
-     * Destruct and close session
+     * @return void
      */
-    public function __destruct()
+    public function logout(): void
     {
-        $this->closeSession();
+        Session::getInstance()
+            ->set('destroyed_time', time())
+            ->remove('user_id');
     }
-
 }

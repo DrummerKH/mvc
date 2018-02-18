@@ -9,23 +9,22 @@
 namespace App\Contracts;
 
 use App\Entities\Users;
-use Core\Contracts\AbstractStorageManager;
+use Core\Contracts\AbstractRepository;
 
 abstract class AbstractAuthorization
 {
     /**
-     * Storage instance
-     * @var AbstractStorageManager
+     * @var AbstractRepository
      */
-    protected $storage;
+    protected $userRepository;
 
     /**
      * Authorisation constructor.
-     * @param AbstractStorageManager $storage
+     * @param AbstractRepository $usersRepository
      */
-    public function __construct(AbstractStorageManager $storage)
+    public function __construct(AbstractRepository $usersRepository)
     {
-        $this->storage = $storage;
+        $this->userRepository = $usersRepository;
     }
 
     /**
@@ -49,22 +48,16 @@ abstract class AbstractAuthorization
     abstract function getUser(): Users;
 
     /**
+     * Logout user
+     * @return mixed
+     */
+    abstract function logout(): void;
+
+    /**
      * Check password
      * @param string $string
      * @param string $hash
      * @return mixed
      */
     abstract protected function verifyPassword(string $string, string $hash): bool;
-
-    /**
-     * Logout user
-     * @return mixed
-     */
-    abstract function logout(): bool;
-
-    /**
-     * Close session
-     * @return void
-     */
-    abstract function closeSession(): void;
 }

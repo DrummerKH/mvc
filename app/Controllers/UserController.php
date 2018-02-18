@@ -2,13 +2,11 @@
 
 namespace App\Controllers;
 
-use App\Contracts\AbstractPayments;
+
 use App\Exceptions\UserException;
-use App\Repositories\UsersRepository;
+use App\Factories\PaymentsFactory;
 use App\Traits\Auth;
 use Core\Contracts\AbstractController;
-use Core\MysqlStorage;
-use App\Services\Payments;
 
 /**
  * Created by PhpStorm.
@@ -16,16 +14,9 @@ use App\Services\Payments;
  * Date: 14.02.18
  * Time: 12:04
  */
-
 class UserController extends AbstractController
 {
     use Auth;
-
-    /**
-     * Service instance
-     * @var Payments
-     */
-    public $payments;
 
     /**
      * Default method
@@ -40,31 +31,34 @@ class UserController extends AbstractController
      */
     public function login(): void
     {
-        if($this->authAuthorized())
+        if ($this->authAuthorized()) {
             $this->response->redirect('/user/withdraw', 302);
+        }
 
         $username = $this->request->getPost('username');
         $password = $this->request->getPost('password');
 
         $params = [];
-        $view = 'login';
 
-        if($this->request->isPost()) {
+        if ($this->request->isPost()) {
 
             $error = '';
 
             try {
 
-                if(!$username)
+                if (!$username) {
                     throw new UserException('Username not specified');
+                }
 
-                if(!$password)
+                if (!$password) {
                     throw new UserException('Password not specified');
+                }
 
-                if(!$this->authAuthorize($username, $password))
+                if (!$this->authAuthorize($username, $password)) {
                     throw new UserException('Incorrect login data');
+                }
 
-                $view = 'withdraw';
+                $this->response->redirect('/user/withdraw', 302);
 
             } catch (UserException $e) {
                 $error = $e->getMessage();
@@ -75,9 +69,7 @@ class UserController extends AbstractController
             ];
         }
 
-        $this->authCloseSession();
-
-        $this->response->render($view, $params);
+        $this->response->render('login', $params);
     }
 
     /**
@@ -90,36 +82,36 @@ class UserController extends AbstractController
     }
 
     /**
-     * Withdraw money
+     * @throws \Exception
      */
     public function withdraw(): void
     {
-        if(!$this->authAuthorized())
+        if (!$this->authAuthorized()) {
             $this->response->redirect('/user/login', 302);
+        }
 
-        $user = $this->authGetUser();
-        $this->authCloseSession();
+        if (!$user = $this->authGetUser()) {
+            throw new UserException('User not found');
+        }
 
-        $user_id = $user->getId();
-        $amount = floatval($this->request->getPost('amount'));
+        $amount = floatval($this->request->getPost('amount', 0));
 
         $params = [];
 
-        if($this->request->isPost()) {
+        $balance = $user->getBalance();
+
+        if ($this->request->isPost()) {
 
             $error = '';
 
             try {
 
-                if($amount <= 0)
+                if ($amount <= 0) {
                     throw new UserException('Amount must be greater than 0');
+                }
 
-                if(!$user_id)
-                    throw new UserException('Specified incorrect user');
-
-                $this->setPaymentsService(new Payments(new MysqlStorage));
-                $this->payments->transaction($user_id, -$amount);
-                $user = (new UsersRepository(new MysqlStorage()))->findById($user_id);
+                PaymentsFactory::create()->withdraw($user, $amount);
+                $balance = \bcsub($balance, $amount, 2);
 
             } catch (UserException $e) {
                 $error = $e->getMessage();
@@ -130,18 +122,9 @@ class UserController extends AbstractController
             ];
         }
 
-        $params['balance'] = $user->getBalance();
+        $params['balance'] = $balance;
         $params['username'] = $user->getName();
 
         $this->response->render('withdraw', $params);
-    }
-
-    /**
-     * Set payments service
-     * @param AbstractPayments $payments
-     */
-    protected function setPaymentsService(AbstractPayments $payments): void
-    {
-        $this->payments = $payments;
     }
 }

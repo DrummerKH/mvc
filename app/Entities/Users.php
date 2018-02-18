@@ -8,35 +8,32 @@
 
 namespace App\Entities;
 
+
 class Users
 {
-    /**
-     * @var integer
-     */
-    public $id;
-
-    /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var float
-     */
-    public $balance;
-
-    /**
-     * @var string
-     */
-    public $password;
-
     /**
      * Table name
      * @var string
      */
     public static $table_name = 'users';
+    /**
+     * @var integer
+     */
+    public $id;
+    /**
+     * @var string
+     */
+    public $name;
+    /**
+     * @var float
+     */
+    public $balance;
+    /**
+     * @var string
+     */
+    public $password;
 
-    public function __construct(string $name, float $balance = 0, int $id = NULL, string $password = NULL)
+    public function __construct(string $name, float $balance = 0, int $id = null, string $password = null)
     {
         $this->id = $id;
         $this->name = $name;

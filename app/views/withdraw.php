@@ -1,9 +1,9 @@
 <h1>Withdrawal</h1>
 
-Logged User: <?= $username?>: Balance <?= $balance?>
+Logged User: <?= $username ?>: Balance <?= $balance ?>
 
 <form action="/user/withdraw" method="post">
-    <label for="amount" >
+    <label for="amount">
         Amount
         <input type="text" name="amount">
     </label>

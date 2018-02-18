@@ -10,10 +10,11 @@ namespace App\Traits;
 
 use App\Contracts\AbstractAuthorization;
 use App\Entities\Users;
+use App\Factories\AuthorizationFactory;
 use App\Services\Authorization;
-use Core\MysqlStorage;
 
-trait Auth {
+trait Auth
+{
 
     /**
      * Authorization service instance
@@ -27,12 +28,11 @@ trait Auth {
      */
     public function __construct()
     {
-        session_start();
+        $this->authorization = AuthorizationFactory::create();
 
-        $this->authorization = new Authorization(new MysqlStorage);
-
-        if(! $this->authorization instanceof AbstractAuthorization)
+        if (!$this->authorization instanceof AbstractAuthorization) {
             throw new \Exception('$this->authorization Must be instance of AbstractAuthorization');
+        }
     }
 
     /**
@@ -62,13 +62,8 @@ trait Auth {
         return $this->authorization->getUser();
     }
 
-    public function authLogout(): bool
+    public function authLogout(): void
     {
-        return $this->authorization->logout();
-    }
-
-    public function authCloseSession(): void
-    {
-        unset($this->authorization);
+        $this->authorization->logout();
     }
 }

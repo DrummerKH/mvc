@@ -5,6 +5,7 @@
  * Date: 14.02.18
  * Time: 15:38
  */
+
 namespace Core;
 
 use Core\Contracts\AbstractStorageManager;
@@ -12,38 +13,15 @@ use Core\Contracts\AbstractStorageManager;
 class MysqlStorage extends AbstractStorageManager
 {
     /**
-     * @return \PDO
-     */
-    protected function connect(): \PDO
-    {
-        return new \PDO(
-            "mysql:host={$this->config['host']};dbname={$this->config['dbname']};port={$this->config['port']}",
-            $this->config['username'],
-            $this->config['password'],
-            [
-                \PDO::ATTR_PERSISTENT => true
-            ]
-        );
-    }
-
-    /**
      * @param string $query
      * @param array $parameters
-     * @return \PDOStatement
+     * @return MysqlStorage
      */
-    public function query(string $query, array $parameters): \PDOStatement
+    public function query(string $query, array $parameters): MysqlStorage
     {
         $this->statement = $this->connection->prepare($query);
         $this->statement->execute($this->prepareParameters($parameters));
-        return $this->statement;
-    }
-
-    /**
-     * @return array
-     */
-    public function fetch(): array
-    {
-        return $this->statement->fetchAll();
+        return $this;
     }
 
     /**
@@ -57,6 +35,15 @@ class MysqlStorage extends AbstractStorageManager
             $result_params[":$key"] = $value;
         }
         return $result_params;
+    }
+
+    /**
+     * @return array
+     */
+    public function fetch(): array
+    {
+        $this->forUpdate = false;
+        return $this->statement->fetchAll();
     }
 
     /**
@@ -83,5 +70,20 @@ class MysqlStorage extends AbstractStorageManager
     public function rollback(): void
     {
         $this->connection->rollBack();
+    }
+
+    /**
+     * @return \PDO
+     */
+    protected function connect(): \PDO
+    {
+        return new \PDO(
+            "mysql:host={$this->config['host']};dbname={$this->config['dbname']};port={$this->config['port']}",
+            $this->config['username'],
+            $this->config['password'],
+            [
+                \PDO::ATTR_PERSISTENT => true
+            ]
+        );
     }
 }
