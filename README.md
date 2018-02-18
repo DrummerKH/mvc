@@ -4,6 +4,7 @@ Initial SQL exists in `/resources/sql.sql` file.
 
 Installation:
 * Download dependencies: `composer install`
+* Required php `bcmath` package
 
 Entry point: `/public/index.php` - Web root
 
